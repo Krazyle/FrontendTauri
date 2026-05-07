@@ -2,6 +2,7 @@ import os
 from enum import Enum
 from typing import Optional
 
+import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
@@ -118,3 +119,7 @@ async def chat(request: ChatRequest):
 @app.get("/")
 async def root():
     return {"status": "ok", "message": "Geon AI Backend is running!"}
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)

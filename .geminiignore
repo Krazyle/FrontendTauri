@@ -1,7 +1,6 @@
 # Logs
-logs/
 *.log
-npm-debug.log*
+logs/
 
 # Dependencies
 node_modules/
@@ -18,7 +17,11 @@ src-tauri/gen/schemas/
 *.local
 
 # System
+.git/
 .vscode/
 
 # Large Lock files
+bun.lock
 bun.lockb
+src-tauri/Cargo.lock
+src-fastapi/uv.lock

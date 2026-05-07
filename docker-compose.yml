@@ -12,5 +12,16 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql
 
+  featureserv:
+    container_name: geon_featureserv
+    image: pramsey/pg_featureserv:20250917
+    restart: always
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    ports:
+      - "9000:9000"
+    depends_on:
+      - db
+
 volumes:
   postgres_data:

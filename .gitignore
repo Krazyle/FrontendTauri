@@ -1,0 +1,21 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependency directories
+node_modules
+
+# Build outputs
+dist
+
+# Tauri
+src-tauri/target
+src-tauri/gen/schemas
+
+# Environment variables
+.env
+*.local
+
+# Bun
+bun.lockb

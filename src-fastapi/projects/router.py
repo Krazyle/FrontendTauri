@@ -32,10 +32,7 @@ async def create_project(
     status_code=status.HTTP_200_OK,
 )
 async def list_projects(service: ProjectServiceDependency) -> list[ProjectRead]:
-    return [
-        ProjectRead.model_validate(project)
-        for project in await service.list_all()
-    ]
+    return [ProjectRead.model_validate(project) for project in await service.list_all()]
 
 
 @router.get(

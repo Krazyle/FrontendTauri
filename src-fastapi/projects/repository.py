@@ -23,10 +23,7 @@ class ProjectRepository:
         return created_project
 
     async def list_all(self) -> list[Project]:
-        statement = (
-            select(Project)
-            .order_by(col(Project.created_at), col(Project.id))
-        )
+        statement = select(Project).order_by(col(Project.created_at), col(Project.id))
         result = await self.session.execute(statement)
         return list(result.scalars().all())
 

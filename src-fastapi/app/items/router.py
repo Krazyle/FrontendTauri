@@ -2,8 +2,8 @@ from uuid import UUID
 
 from fastapi import APIRouter, status
 
-from items.dependencies import ItemServiceDependency
-from items.schemas import ItemCreate, ItemRead, ItemUpdate
+from app.items.dependencies import ItemServiceDependency
+from app.items.schemas import ItemCreate, ItemRead, ItemUpdate
 
 
 router = APIRouter(

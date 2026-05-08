@@ -133,7 +133,7 @@ async def test_list_projects_returns_all_projects(client: AsyncClient) -> None:
 
 
 async def test_missing_project_returns_404(client: AsyncClient) -> None:
-    response = await client.get("/projects/00000000-0000-0000-0000-000000000000")
+    response = await client.get("/projects/999")
 
     assert response.status_code == 404
     assert response.json() == {"detail": "Project not found"}

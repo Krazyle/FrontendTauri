@@ -3,9 +3,9 @@ from typing import Any, NoReturn
 
 from fastapi import HTTPException, status
 
-from collections.service import CollectionService
-from items.repository import ItemRepository
-from items.schemas import ItemCreate, ItemUpdate
+from app.collections.service import CollectionService
+from app.items.repository import ItemRepository
+from app.items.schemas import ItemCreate, ItemUpdate
 
 
 class ItemService:

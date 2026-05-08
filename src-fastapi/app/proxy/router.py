@@ -15,10 +15,13 @@ async def proxy_request(request: Request, path: str):
     if request.query_params:
         url += f"?{request.query_params}"
 
+    # Forward headers (excluding host to prevent routing issues)
+    headers = {k: v for k, v in request.headers.items() if k.lower() not in ("host",)}
+
     async with httpx.AsyncClient() as client:
         # We only proxy GET requests for now as per Read-Only pg_featureserv
         try:
-            proxy_res = await client.get(url, timeout=10.0)
+            proxy_res = await client.get(url, headers=headers, timeout=10.0)
             return Response(
                 content=proxy_res.content,
                 status_code=proxy_res.status_code,
@@ -49,3 +52,18 @@ async def proxy_collection_items(request: Request, collection_id: str):
 @router.get("/collections/{collection_id}/items/{item_id}")
 async def proxy_item_detail(request: Request, collection_id: str, item_id: str):
     return await proxy_request(request, f"collections/{collection_id}/items/{item_id}")
+
+
+@router.get("/functions")
+async def proxy_functions(request: Request):
+    return await proxy_request(request, "functions")
+
+
+@router.get("/functions/{function_id}")
+async def proxy_function_detail(request: Request, function_id: str):
+    return await proxy_request(request, f"functions/{function_id}")
+
+
+@router.get("/functions/{function_id}/items")
+async def proxy_function_items(request: Request, function_id: str):
+    return await proxy_request(request, f"functions/{function_id}/items")

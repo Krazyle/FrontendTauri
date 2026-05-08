@@ -1,10 +1,9 @@
 from datetime import datetime
 from typing import Annotated
-from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
-from projects.constants import (
+from app.projects.constants import (
     PROJECT_DESCRIPTION_MAX_LENGTH,
     PROJECT_NAME_MAX_LENGTH,
 )
@@ -47,7 +46,7 @@ class ProjectUpdate(BaseModel):
 class ProjectRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
-    id: UUID
+    id: int
     name: ProjectName
     description: str | None = None
     created_at: datetime

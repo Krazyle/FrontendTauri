@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 
-from projects import projects_router
-from collections import collections_router
-from items import items_router
-from proxy import proxy_router
+from app.projects import projects_router
+from app.collections import collections_router
+from app.items import items_router
+from app.proxy import proxy_router
 
 app = FastAPI()
 

@@ -1,11 +1,9 @@
-from uuid import UUID
-
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import col
 
-from projects.models import Project
-from projects.schemas import ProjectCreate, ProjectReplace, ProjectUpdate
+from app.projects.models import Project
+from app.projects.schemas import ProjectCreate, ProjectReplace, ProjectUpdate
 
 
 class ProjectRepository:
@@ -27,12 +25,12 @@ class ProjectRepository:
         result = await self.session.execute(statement)
         return list(result.scalars().all())
 
-    async def get(self, project_id: UUID) -> Project | None:
+    async def get(self, project_id: int) -> Project | None:
         return await self.session.get(Project, project_id)
 
     async def replace(
         self,
-        project_id: UUID,
+        project_id: int,
         project: ProjectReplace,
     ) -> Project | None:
         existing_project = await self.get(project_id)
@@ -45,7 +43,7 @@ class ProjectRepository:
         await self.session.refresh(existing_project)
         return existing_project
 
-    async def update(self, project_id: UUID, project: ProjectUpdate) -> Project | None:
+    async def update(self, project_id: int, project: ProjectUpdate) -> Project | None:
         existing_project = await self.get(project_id)
         if existing_project is None:
             return None
@@ -61,7 +59,7 @@ class ProjectRepository:
         await self.session.refresh(existing_project)
         return existing_project
 
-    async def delete(self, project_id: UUID) -> bool:
+    async def delete(self, project_id: int) -> bool:
         existing_project = await self.get(project_id)
         if existing_project is None:
             return False

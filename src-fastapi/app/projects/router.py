@@ -1,9 +1,8 @@
-from uuid import UUID
 
 from fastapi import APIRouter, status
 
-from projects.dependencies import ProjectServiceDependency
-from projects.schemas import (
+from app.projects.dependencies import ProjectServiceDependency
+from app.projects.schemas import (
     ProjectCreate,
     ProjectRead,
     ProjectReplace,
@@ -41,7 +40,7 @@ async def list_projects(service: ProjectServiceDependency) -> list[ProjectRead]:
     status_code=status.HTTP_200_OK,
 )
 async def read_project(
-    project_id: UUID,
+    project_id: int,
     service: ProjectServiceDependency,
 ) -> ProjectRead:
     return ProjectRead.model_validate(await service.get(project_id))
@@ -53,7 +52,7 @@ async def read_project(
     status_code=status.HTTP_200_OK,
 )
 async def replace_project(
-    project_id: UUID,
+    project_id: int,
     project: ProjectReplace,
     service: ProjectServiceDependency,
 ) -> ProjectRead:
@@ -66,7 +65,7 @@ async def replace_project(
     status_code=status.HTTP_200_OK,
 )
 async def update_project(
-    project_id: UUID,
+    project_id: int,
     project: ProjectUpdate,
     service: ProjectServiceDependency,
 ) -> ProjectRead:
@@ -75,7 +74,7 @@ async def update_project(
 
 @router.delete("/{project_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_project(
-    project_id: UUID,
+    project_id: int,
     service: ProjectServiceDependency,
 ) -> None:
     await service.delete(project_id)

@@ -5,8 +5,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from geoalchemy2 import Geometry
 from geoalchemy2.functions import ST_AsGeoJSON, ST_GeomFromGeoJSON
 
-from collections.models import Collection
-from items.schemas import ItemCreate, ItemUpdate
+from app.collections.models import Collection
+from app.items.schemas import ItemCreate, ItemUpdate
 
 
 class ItemRepository:

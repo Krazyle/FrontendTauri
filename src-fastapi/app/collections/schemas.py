@@ -2,9 +2,8 @@ from datetime import datetime
 from typing import Annotated, Any
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints
-from uuid import UUID
 
-from collections.constants import (
+from app.collections.constants import (
     COLLECTION_CRS_MAX_LENGTH,
     COLLECTION_DESCRIPTION_MAX_LENGTH,
     COLLECTION_ID_MAX_LENGTH,
@@ -21,7 +20,7 @@ from collections.constants import (
     DEFAULT_ID_COLUMN,
     DEFAULT_SRID,
 )
-from collections.models import CollectionStatus
+from app.collections.models import CollectionStatus
 
 CollectionID = Annotated[
     str,
@@ -96,8 +95,8 @@ class CollectionUpdate(BaseModel):
 class CollectionRead(CollectionBase):
     model_config = ConfigDict(from_attributes=True)
 
-    id: UUID
-    project_id: UUID
+    id: int
+    project_id: int
     status: CollectionStatus
     feature_count: int
     geometry_type: str | None = Field(

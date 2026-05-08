@@ -3,8 +3,8 @@ from typing import Annotated
 from fastapi import Depends
 
 from database import DatabaseSessionDependency
-from projects.repository import ProjectRepository
-from projects.service import ProjectService
+from app.projects.repository import ProjectRepository
+from app.projects.service import ProjectService
 
 
 def get_project_repository(session: DatabaseSessionDependency) -> ProjectRepository:

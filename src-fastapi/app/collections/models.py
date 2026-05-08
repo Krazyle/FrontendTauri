@@ -1,7 +1,6 @@
 from datetime import UTC, datetime
 from enum import Enum
 from typing import Any
-from uuid import UUID, uuid7
 
 from pydantic import field_validator
 from sqlalchemy import (
@@ -17,7 +16,7 @@ from sqlalchemy.dialects.postgresql import JSONB
 from sqlmodel import Field, SQLModel
 
 
-from collections.constants import (
+from app.collections.constants import (
     COLLECTION_CRS_MAX_LENGTH,
     COLLECTION_DESCRIPTION_MAX_LENGTH,
     COLLECTION_ERROR_MESSAGE_MAX_LENGTH,
@@ -96,8 +95,8 @@ class Collection(SQLModel, table=True):
         ),
     )
 
-    id: UUID = Field(default_factory=uuid7, primary_key=True)
-    project_id: UUID = Field(
+    id: int | None = Field(default=None, primary_key=True)
+    project_id: int = Field(
         foreign_key="projects.id",
         ondelete="CASCADE",
         index=True,
@@ -215,7 +214,7 @@ class Collection(SQLModel, table=True):
 
     def __repr__(self) -> str:
         return (
-            f"<ProjectCollection("
+            f"<Collection("
             f"id={self.id}, "
             f"collection_id={self.collection_id}, "
             f"status={self.status}"

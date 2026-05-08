@@ -3,8 +3,8 @@ from typing import Annotated
 from fastapi import Depends
 
 from database import DatabaseSessionDependency
-from collections.repository import CollectionRepository
-from collections.service import CollectionService
+from app.collections.repository import CollectionRepository
+from app.collections.service import CollectionService
 
 
 def get_collection_repository(

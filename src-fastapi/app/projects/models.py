@@ -1,10 +1,9 @@
 from datetime import UTC, datetime
-from uuid import UUID, uuid7
 
 from sqlalchemy import CheckConstraint, Column, DateTime, String, event, func
 from sqlmodel import Field, SQLModel
 
-from projects.constants import PROJECT_DESCRIPTION_MAX_LENGTH, PROJECT_NAME_MAX_LENGTH
+from app.projects.constants import PROJECT_DESCRIPTION_MAX_LENGTH, PROJECT_NAME_MAX_LENGTH
 
 
 def utc_now() -> datetime:
@@ -17,7 +16,7 @@ class Project(SQLModel, table=True):
         CheckConstraint("length(trim(name)) >= 1", name="ck_projects_name_not_blank"),
     )
 
-    id: UUID = Field(default_factory=uuid7, primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
     name: str = Field(
         sa_column=Column(
             String(PROJECT_NAME_MAX_LENGTH),

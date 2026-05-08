@@ -3,9 +3,9 @@ from typing import Annotated
 from fastapi import Depends
 
 from database import DatabaseSessionDependency
-from items.repository import ItemRepository
-from items.service import ItemService
-from collections.dependencies import CollectionServiceDependency
+from app.items.repository import ItemRepository
+from app.items.service import ItemService
+from app.collections.dependencies import CollectionServiceDependency
 
 
 def get_item_repository(

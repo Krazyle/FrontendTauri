@@ -1,11 +1,10 @@
-from uuid import UUID
 from typing import NoReturn
 
 from fastapi import HTTPException, status
 
-from projects.models import Project
-from projects.repository import ProjectRepository
-from projects.schemas import ProjectCreate, ProjectReplace, ProjectUpdate
+from app.projects.models import Project
+from app.projects.repository import ProjectRepository
+from app.projects.schemas import ProjectCreate, ProjectReplace, ProjectUpdate
 
 
 class ProjectService:
@@ -18,27 +17,27 @@ class ProjectService:
     async def list_all(self) -> list[Project]:
         return await self.repository.list_all()
 
-    async def get(self, project_id: UUID) -> Project:
+    async def get(self, project_id: int) -> Project:
         project = await self.repository.get(project_id)
         if project is None:
             raise_project_not_found()
         return project
 
-    async def replace(self, project_id: UUID, project: ProjectReplace) -> Project:
+    async def replace(self, project_id: int, project: ProjectReplace) -> Project:
         updated_project = await self.repository.replace(project_id, project)
 
         if updated_project is None:
             raise_project_not_found()
         return updated_project
 
-    async def update(self, project_id: UUID, project: ProjectUpdate) -> Project:
+    async def update(self, project_id: int, project: ProjectUpdate) -> Project:
         updated_project = await self.repository.update(project_id, project)
 
         if updated_project is None:
             raise_project_not_found()
         return updated_project
 
-    async def delete(self, project_id: UUID) -> None:
+    async def delete(self, project_id: int) -> None:
         if not await self.repository.delete(project_id):
             raise_project_not_found()
 

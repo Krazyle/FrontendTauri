@@ -1,30 +1,31 @@
+import { useState } from "react";
 import Header from "./header/Header";
-import Files from "./file-manager/Files";
 import Chat from "./chat/Chat";
 import Map from "./map/Map";
 import "./App.css";
-import ProjectManager from "./project-manager/ProjectManager"; //
-import { BrowserRouter, Routes, Route } from "react-router-dom"; //
-
+import ProjectManager from "./project-manager/ProjectManager";
 
 function App() {
+  const [currentView, setCurrentView] = useState<"main" | "projects">("projects");
+
+  const navigate = (view: "main" | "projects") => {
+    setCurrentView(view);
+  };
+
   return (
-     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={
-          <main className="h-screen w-screen overflow-hidden flex flex-col">
-            <Header />
-            <div className="flex-1 relative">
-              <Files />
-              <Chat />
-              <Map />
-            </div>
-          </main>
-        } />
-        
-        <Route path="/projects" element={<ProjectManager />} />
-      </Routes>
-    </BrowserRouter>
+    <>
+      {currentView === "main" ? (
+        <main className="h-screen w-screen overflow-hidden flex flex-col">
+          <Header onNavigate={navigate} />
+          <div className="flex-1 relative">
+            <Chat />
+            <Map />
+          </div>
+        </main>
+      ) : (
+        <ProjectManager onNavigate={navigate} />
+      )}
+    </>
   );
 }
 

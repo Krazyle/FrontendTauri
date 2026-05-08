@@ -20,6 +20,6 @@
     "ui": "@/components",
     "lib": "@/lib",
     "hooks": "@/hooks"
-  },
+  }
 }
 

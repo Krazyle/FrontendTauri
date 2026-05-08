@@ -25,6 +25,8 @@ class Settings(BaseSettings):
     postgres_port: int = 5432
     postgres_db: str = "geon"
 
+    pg_featureserv_url: str = "http://localhost:9000"
+
     @property
     def sqlalchemy_database_url(self) -> str:
         if self.database_url:

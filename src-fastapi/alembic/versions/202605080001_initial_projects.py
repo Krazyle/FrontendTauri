@@ -36,7 +36,9 @@ def upgrade() -> None:
             server_default=sa.text("now()"),
             nullable=False,
         ),
-        sa.CheckConstraint("length(trim(name)) >= 1", name="ck_projects_name_not_blank"),
+        sa.CheckConstraint(
+            "length(trim(name)) >= 1", name="ck_projects_name_not_blank"
+        ),
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index("ix_projects_name", "projects", ["name"])

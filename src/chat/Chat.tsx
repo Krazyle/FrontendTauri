@@ -5,6 +5,7 @@ import { ChatHeader } from "./ChatHeader";
 import { ChatHistory } from "./ChatHistory";
 import { ChatInput } from "./ChatInput";
 import { useChatState } from "./useChatState";
+
 export default function Chat() {
   const [minimized, setMinimized] = useState(false);
   const [input, setInput] = useState("");

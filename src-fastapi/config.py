@@ -39,6 +39,11 @@ class Settings(BaseSettings):
     collections_default_import_status: str = "importing"
     cors_allowed_origins: list[str] = ["*"]
 
+    openrouter_api_key: str = ""
+    openrouter_base_url: str = "https://openrouter.ai/api/v1"
+    openrouter_default_model: str = "deepseek/deepseek-chat"
+    response_store_enabled: bool = True
+
     @property
     def sqlalchemy_database_url(self) -> str:
         if self.database_url:

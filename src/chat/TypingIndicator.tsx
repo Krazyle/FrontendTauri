@@ -1,3 +1,4 @@
+/** Animated 3-dot indicator shown while waiting for AI response. */
 export function TypingIndicator() {
   return (
     <div className="flex w-full max-w-[95%]">

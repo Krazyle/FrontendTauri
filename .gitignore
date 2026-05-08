@@ -5,6 +5,7 @@ npm-debug.log*
 
 # Dependencies
 node_modules/
+.venv/
 src-fastapi/.venv/
 __pycache__/
 
@@ -13,12 +14,23 @@ dist/
 src-tauri/target/
 src-tauri/gen/schemas/
 
+# Database
+*.db
+*.sqlite3
+
 # Environment
 .env
 *.local
 
 # System
 .vscode/
+.python-version
 
-# Large Lock files
+# Tooling Caches
+.pytest_cache/
+.ruff_cache/
+src-fastapi/.pytest_cache/
+src-fastapi/.ruff_cache/
+
+# Large Lock Files
 bun.lockb

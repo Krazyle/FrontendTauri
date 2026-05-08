@@ -1,3 +1,4 @@
+/** DeepSeek agent and transport for in-process AI chat. */
 import { createDeepSeek } from "@ai-sdk/deepseek";
 import { DirectChatTransport, ToolLoopAgent } from "ai";
 

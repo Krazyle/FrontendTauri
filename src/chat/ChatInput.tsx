@@ -10,6 +10,7 @@ interface ChatInputProps {
   onSubmit: (e?: React.FormEvent) => void;
 }
 
+/** Message input form with suggestion chips. */
 export function ChatInput({ input, setInput, isWaiting, onSubmit }: ChatInputProps) {
   return (
     <div className="px-3 pb-3 flex flex-col gap-2">

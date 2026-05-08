@@ -7,6 +7,8 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from sqlmodel import SQLModel
 
 from app.projects import models  # noqa: F401
+from app.conversations import models  # noqa: F401
+from app.responses import models  # noqa: F401
 from config import get_settings
 
 

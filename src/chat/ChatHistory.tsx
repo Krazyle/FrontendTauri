@@ -1,8 +1,8 @@
-import { Sparkles } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChatMessage } from "./ChatMessage";
 import { TypingIndicator } from "./TypingIndicator";
+import { ChatEmptyState } from "./ChatEmptyState";
 import type { ChatMessage as ChatMessageType } from "./types";
 
 interface ChatHistoryProps {
@@ -10,6 +10,7 @@ interface ChatHistoryProps {
   isWaiting: boolean;
 }
 
+/** Scrollable message list with auto-scroll and entry animations. */
 export function ChatHistory({ messages, isWaiting }: ChatHistoryProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -29,15 +30,7 @@ export function ChatHistory({ messages, isWaiting }: ChatHistoryProps) {
     >
       <div className="flex flex-col gap-4">
         {messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
-            <div className="size-10 rounded-full bg-zinc-100 flex items-center justify-center">
-              <Sparkles className="size-5 text-zinc-400" />
-            </div>
-            <div className="space-y-1">
-              <h3 className="font-medium text-sm text-zinc-700">How can I help?</h3>
-              <p className="text-zinc-400 text-sm">Ask about your map data or get help with analysis.</p>
-            </div>
-          </div>
+          <ChatEmptyState />
         ) : (
           <AnimatePresence initial={false}>
             {messages.map((m) => (

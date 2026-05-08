@@ -4,6 +4,7 @@ import { cjk } from "@streamdown/cjk";
 import { code } from "@streamdown/code";
 import { math } from "@streamdown/math";
 import { mermaid } from "@streamdown/mermaid";
+import { getMessageText } from "./types";
 import type { ChatMessage as ChatMessageType } from "./types";
 
 const plugins = { cjk, code, math, mermaid };
@@ -12,12 +13,9 @@ interface ChatMessageProps {
   message: ChatMessageType;
 }
 
+/** Single message bubble — user (black) or assistant (markdown). */
 export const ChatMessage = memo(function ChatMessage({ message }: ChatMessageProps) {
-  const textContent = (message as any).parts
-    ?.filter((p: any) => p.type === "text")
-    .map((p: any) => p.text)
-    .join("") ?? (message as any).content ?? "";
-
+  const textContent = getMessageText(message);
   const isUser = message.role === "user";
 
   return (
@@ -38,4 +36,5 @@ export const ChatMessage = memo(function ChatMessage({ message }: ChatMessagePro
     </div>
   );
 });
+
 

@@ -5,6 +5,7 @@ interface ChatHeaderProps {
   onMinimize: () => void;
 }
 
+/** Title bar with minimize button for the chat window. */
 export function ChatHeader({ onMinimize }: ChatHeaderProps) {
   return (
     <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-100">

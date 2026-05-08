@@ -1,5 +1,5 @@
 import { Button } from "./Button";
-import { MousePointer2, Hand, Square, Circle, Pencil } from "lucide-react";
+import { MousePointer2, Hand, Square, Circle, Pencil, Pentagon } from "lucide-react";
 import { useDrawing } from "../map/DrawingContext";
 
 export default function Header() {
@@ -62,6 +62,12 @@ export default function Header() {
           className={currentMode === 'linestring' ? 'bg-blue-100' : ''}
         >
           <Pencil />
+        </Button>
+        <Button
+          onClick={() => handleDrawingMode('polygon')}
+          className={currentMode === 'polygon' ? 'bg-blue-100' : ''}
+        >
+          <Pentagon />
         </Button>
       </div>
 

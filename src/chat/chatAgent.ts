@@ -3,7 +3,7 @@ import { createDeepSeek } from "@ai-sdk/deepseek";
 import { DirectChatTransport, ToolLoopAgent } from "ai";
 
 const deepseek = createDeepSeek({
-  apiKey: import.meta.env.VITE_DEEPSEEK_API_KEY ?? "",
+  apiKey: import.meta.env.OPENROUTER_API_KEY ?? "",
 });
 
 const agent = new ToolLoopAgent({

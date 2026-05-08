@@ -6,7 +6,7 @@ import "./App.css";
 import ProjectManager from "./project-manager/ProjectManager";
 
 function App() {
-  const [currentView, setCurrentView] = useState<"main" | "projects">("projects");
+  const [currentView, setCurrentView] = useState<"main" | "projects">("main");
 
   const navigate = (view: "main" | "projects") => {
     setCurrentView(view);

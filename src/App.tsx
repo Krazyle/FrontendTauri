@@ -2,7 +2,6 @@ import Header from "./header/Header";
 import Files from "./file-manager/Files";
 import Chat from "./chat/Chat";
 import Map from "./map/Map";
-import { DrawingProvider } from "./map/DrawingContext";
 import "./App.css";
 import ProjectManager from "./project-manager/ProjectManager"; //
 import { BrowserRouter, Routes, Route } from "react-router-dom"; //
@@ -11,7 +10,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"; //
 function App() {
   return (
      <BrowserRouter>
-      <DrawingProvider>
       <Routes>
         <Route path="/" element={
           <main className="h-screen w-screen overflow-hidden flex flex-col">
@@ -26,7 +24,6 @@ function App() {
         
         <Route path="/projects" element={<ProjectManager />} />
       </Routes>
-      </DrawingProvider>
     </BrowserRouter>
   );
 }

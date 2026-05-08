@@ -3,7 +3,7 @@ import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { initializeDrawingTools } from './DrawingTools';
 import { MaplibreTerradrawControl } from '@watergis/maplibre-gl-terradraw';
-import { useDrawing } from './DrawingContext';
+import { drawingControl } from './drawingStore';
 
 interface MapProps {
   className?: string;
@@ -13,7 +13,6 @@ export default function Map({ className }: MapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
   const drawControl = useRef<MaplibreTerradrawControl | null>(null);
-  const { setDrawingControl } = useDrawing();
 
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
@@ -26,14 +25,14 @@ export default function Map({ className }: MapProps) {
     }); 
 
     drawControl.current = initializeDrawingTools(map.current);
-    setDrawingControl(drawControl.current);
+    drawingControl.set(drawControl.current);
 
     return () => {
       map.current?.remove();
       map.current = null;
       drawControl.current = null;
     };
-  }, [setDrawingControl]);
+  }, []);
 
   return (
     <div 

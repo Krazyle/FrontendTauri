@@ -1,10 +1,9 @@
 import json
 from typing import Any
-from sqlalchemy import text, Table, MetaData, Column, Integer, String, select, insert, update, delete
-from sqlalchemy.ext.asyncio import AsyncSession
 from geoalchemy2 import Geometry
 from geoalchemy2.functions import ST_AsGeoJSON, ST_GeomFromGeoJSON
-
+from sqlalchemy import Column, MetaData, Table, select
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.collections.models import Collection
 from app.items.schemas import ItemCreate, ItemUpdate
 
@@ -12,115 +11,90 @@ from app.items.schemas import ItemCreate, ItemUpdate
 class ItemRepository:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
-        self.metadata = MetaData()
 
-    async def _get_table(self, collection: Collection) -> Table:
-        # For simplicity in this prototype, we reflect or construct the table dynamically.
-        # In a production app, we might want to cache these table objects.
-        
-        # We construct the table definition based on collection metadata
-        table = Table(
-            collection.table_name,
-            self.metadata,
-            Column(collection.id_column, Integer, primary_key=True),
-            # Other columns are dynamic. We might need to reflect them to be fully generic.
-            schema=collection.schema_name,
-            extend_existing=True
-        )
-        return table
+    def _build_table(self, collection: Collection) -> Table:
+        metadata = MetaData(schema=collection.schema_name)
+        geom_type = collection.geometry_type.value.upper() if collection.geometry_type else None
+        columns = [
+            Column(collection.id_column),
+            Column(
+                collection.geometry_column,
+                Geometry(geometry_type=geom_type, srid=collection.srid),
+            ),
+        ]
+        return Table(collection.table_name, metadata, *columns, extend_existing=True)
 
-    async def create(self, collection: Collection, item: ItemCreate) -> dict[str, Any]:
-        geom_json = json.dumps(item.geometry)
-        
-        cols = [collection.geometry_column]
-        vals = ["ST_GeomFromGeoJSON(:geom)"]
-        params = {"geom": geom_json}
-        
+    @staticmethod
+    def _to_feature(
+        row: Any, id_col: str, geom_col: str, geometry: dict[str, Any]
+    ) -> dict[str, Any]:
+        properties = {
+            k: v for k, v in row._mapping.items() if k not in (id_col, geom_col, "geometry")
+        }
+        return {
+            "id": row._mapping[id_col],
+            "geometry": geometry,
+            "properties": properties,
+            "type": "Feature",
+        }
+
+    async def create(self, collection: Collection, item: ItemCreate) -> dict[str, Any] | None:
+        table = self._build_table(collection)
+        geom_col = collection.geometry_column
+        id_col = collection.id_column
+        values: dict[str, Any] = {geom_col: ST_GeomFromGeoJSON(item.geometry.model_dump_json())}
         if item.properties:
-            for k, v in item.properties.items():
-                cols.append(k)
-                vals.append(f":{k}")
-                params[k] = v
-                
-        query = text(f"""
-            INSERT INTO {collection.schema_name}.{collection.table_name} 
-            ({", ".join(cols)})
-            VALUES ({", ".join(vals)})
-            RETURNING {collection.id_column}, ST_AsGeoJSON({collection.geometry_column}) as geometry, *
-        """)
-        
-        result = await self.session.execute(query, params)
+            values.update(item.properties)
+        stmt = (
+            table.insert()
+            .values(**values)
+            .returning(table, ST_AsGeoJSON(table.c[geom_col]).label("geometry"))
+        )
+        result = await self.session.execute(stmt)
         row = result.mappings().first()
         await self.session.commit()
-        
         if row:
-            return self._row_to_item(row, collection)
-        return {}
-
-    async def get(self, collection: Collection, feature_id: str | int) -> dict[str, Any] | None:
-        query = text(f"""
-            SELECT {collection.id_column}, ST_AsGeoJSON({collection.geometry_column}) as geometry, *
-            FROM {collection.schema_name}.{collection.table_name}
-            WHERE {collection.id_column} = :id
-        """)
-        result = await self.session.execute(query, {"id": feature_id})
-        row = result.mappings().first()
-        
-        if row:
-            return self._row_to_item(row, collection)
+            return self._to_feature(row, id_col, geom_col, json.loads(row["geometry"]))
         return None
 
-    async def update(self, collection: Collection, feature_id: str | int, item: ItemUpdate) -> dict[str, Any] | None:
-        # Partial update
-        updates = []
-        params = {"id": feature_id}
-        
+    async def update(
+        self, collection: Collection, feature_id: str | int, item: ItemUpdate
+    ) -> dict[str, Any] | None:
+        table = self._build_table(collection)
+        geom_col = collection.geometry_column
+        id_col = collection.id_column
+        values: dict[str, Any] = {}
         if item.geometry:
-            updates.append(f"{collection.geometry_column} = ST_GeomFromGeoJSON(:geom)")
-            params["geom"] = json.dumps(item.geometry)
-            
+            values[geom_col] = ST_GeomFromGeoJSON(item.geometry.model_dump_json())
         if item.properties:
-            for k, v in item.properties.items():
-                updates.append(f"{k} = :{k}")
-                params[k] = v
-                
-        if not updates:
-            return await self.get(collection, feature_id)
-            
-        query = text(f"""
-            UPDATE {collection.schema_name}.{collection.table_name}
-            SET {", ".join(updates)}
-            WHERE {collection.id_column} = :id
-            RETURNING {collection.id_column}, ST_AsGeoJSON({collection.geometry_column}) as geometry, *
-        """)
-        
-        result = await self.session.execute(query, params)
+            values.update(item.properties)
+        if not values:
+            stmt = select(table, ST_AsGeoJSON(table.c[geom_col]).label("geometry")).where(
+                table.c[id_col] == feature_id
+            )
+            result = await self.session.execute(stmt)
+            row = result.mappings().first()
+            if row:
+                return self._to_feature(row, id_col, geom_col, json.loads(row["geometry"]))
+            return None
+        stmt = (
+            table.update()
+            .values(**values)
+            .where(table.c[id_col] == feature_id)
+            .returning(table, ST_AsGeoJSON(table.c[geom_col]).label("geometry"))
+        )
+        result = await self.session.execute(stmt)
         row = result.mappings().first()
         await self.session.commit()
-        
         if row:
-            return self._row_to_item(row, collection)
+            return self._to_feature(row, id_col, geom_col, json.loads(row["geometry"]))
         return None
 
     async def delete(self, collection: Collection, feature_id: str | int) -> bool:
-        query = text(f"""
-            DELETE FROM {collection.schema_name}.{collection.table_name}
-            WHERE {collection.id_column} = :id
-        """)
-        result = await self.session.execute(query, {"id": feature_id})
+        table = self._build_table(collection)
+        id_col = collection.id_column
+        stmt = table.delete().where(table.c[id_col] == feature_id).returning(table.c[id_col])
+        result = await self.session.execute(stmt)
+        row = result.fetchone()
         await self.session.commit()
-        return result.rowcount > 0
-
-    def _row_to_item(self, row: dict[str, Any], collection: Collection) -> dict[str, Any]:
-        data = dict(row)
-        fid = data.pop(collection.id_column)
-        geometry = json.loads(data.pop("geometry"))
-        # Remove internal columns if any (e.g. the original geom column which is now binary)
-        data.pop(collection.geometry_column, None)
-        
-        return {
-            "id": fid,
-            "geometry": geometry,
-            "properties": data,
-            "type": "Feature"
-        }
+        return row is not None

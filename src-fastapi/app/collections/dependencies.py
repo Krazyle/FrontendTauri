@@ -1,7 +1,5 @@
 from typing import Annotated
-
 from fastapi import Depends
-
 from database import DatabaseSessionDependency
 from app.collections.repository import CollectionRepository
 from app.collections.service import CollectionService
@@ -13,10 +11,7 @@ def get_collection_repository(
     return CollectionRepository(session)
 
 
-CollectionRepositoryDependency = Annotated[
-    CollectionRepository,
-    Depends(get_collection_repository),
-]
+CollectionRepositoryDependency = Annotated[CollectionRepository, Depends(get_collection_repository)]
 
 
 def get_collection_service(
@@ -25,7 +20,4 @@ def get_collection_service(
     return CollectionService(repository)
 
 
-CollectionServiceDependency = Annotated[
-    CollectionService,
-    Depends(get_collection_service),
-]
+CollectionServiceDependency = Annotated[CollectionService, Depends(get_collection_service)]

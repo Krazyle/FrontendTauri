@@ -1,10 +1,13 @@
 from typing import NoReturn
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
-
 from app.collections.models import Collection
 from app.collections.repository import CollectionRepository
-from app.collections.schemas import CollectionCreate, CollectionReplace, CollectionUpdate
+from app.collections.schemas import (
+    CollectionCreate,
+    CollectionReplace,
+    CollectionUpdate,
+)
 
 
 class CollectionService:
@@ -55,26 +58,22 @@ class CollectionService:
 def raise_collection_not_found(identifier: int | str) -> NoReturn:
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
-        detail={
-            "message": "Collection not found",
-            "identifier": str(identifier),
-        },
+        detail={"message": "Collection not found", "identifier": str(identifier)},
     )
 
 
 def raise_collection_conflict(e: IntegrityError) -> NoReturn:
     error_msg = str(e.orig)
     detail = "A collection with this identifier or table name already exists."
-
-    if "uq_project_collection" in error_msg:
+    if "uq_project_collection" in error_msg or (
+        "project_id" in error_msg and "collection_id" in error_msg
+    ):
         detail = "A collection with this ID already exists in this project."
-    elif "uq_collection_table" in error_msg:
+    elif "uq_collection_table" in error_msg or (
+        "schema_name" in error_msg and "table_name" in error_msg
+    ):
         detail = "A database table with this schema and name already exists."
-
     raise HTTPException(
         status_code=status.HTTP_409_CONFLICT,
-        detail={
-            "message": "Collection conflict",
-            "reason": detail,
-        },
+        detail={"message": "Collection conflict", "reason": detail},
     )

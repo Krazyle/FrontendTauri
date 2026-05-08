@@ -50,7 +50,12 @@ async def test_create_read_list_replace_patch_and_delete_project(
 
     missing_response = await client.get(f"/projects/{created_project['id']}")
     assert missing_response.status_code == 404
-    assert missing_response.json() == {"detail": "Project not found"}
+    assert missing_response.json() == {
+        "detail": {
+            "message": "Project not found",
+            "identifier": str(created_project["id"]),
+        }
+    }
 
 
 async def test_duplicate_project_names_are_allowed(client: AsyncClient) -> None:
@@ -136,4 +141,9 @@ async def test_missing_project_returns_404(client: AsyncClient) -> None:
     response = await client.get("/projects/999")
 
     assert response.status_code == 404
-    assert response.json() == {"detail": "Project not found"}
+    assert response.json() == {
+        "detail": {
+            "message": "Project not found",
+            "identifier": "999",
+        }
+    }

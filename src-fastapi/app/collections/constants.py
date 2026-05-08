@@ -1,7 +1,4 @@
-import re
-
-OGC_CRS84 = "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
-IDENTIFIER_RE = re.compile(r"^[a-z][a-z0-9_]*$", re.I)
+from enum import Enum
 
 COLLECTION_ID_MAX_LENGTH = 255
 COLLECTION_TITLE_MAX_LENGTH = 255
@@ -14,7 +11,12 @@ COLLECTION_ID_COLUMN_MAX_LENGTH = 64
 COLLECTION_GEOMETRY_TYPE_MAX_LENGTH = 64
 COLLECTION_ERROR_MESSAGE_MAX_LENGTH = 500
 
-DEFAULT_SCHEMA_NAME = "user_data"
-DEFAULT_GEOMETRY_COLUMN = "geom"
-DEFAULT_ID_COLUMN = "fid"
-DEFAULT_SRID = 4326
+
+class GeometryType(str, Enum):
+    Point = "Point"
+    LineString = "LineString"
+    Polygon = "Polygon"
+    MultiPoint = "MultiPoint"
+    MultiLineString = "MultiLineString"
+    MultiPolygon = "MultiPolygon"
+    GeometryCollection = "GeometryCollection"

@@ -11,6 +11,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"; //
 function App() {
   return (
      <BrowserRouter>
+      <DrawingProvider>
       <Routes>
         <Route path="/" element={
           <main className="h-screen w-screen overflow-hidden flex flex-col">
@@ -25,6 +26,7 @@ function App() {
         
         <Route path="/projects" element={<ProjectManager />} />
       </Routes>
+      </DrawingProvider>
     </BrowserRouter>
   );
 }

@@ -1,31 +1,20 @@
 from datetime import datetime
 from typing import Annotated
-from uuid import UUID
-
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints
-
-from projects.constants import (
+from app.projects.constants import (
     PROJECT_DESCRIPTION_MAX_LENGTH,
     PROJECT_NAME_MAX_LENGTH,
 )
 
-
 ProjectName = Annotated[
     str,
-    StringConstraints(
-        strip_whitespace=True,
-        min_length=1,
-        max_length=PROJECT_NAME_MAX_LENGTH,
-    ),
+    StringConstraints(strip_whitespace=True, min_length=1, max_length=PROJECT_NAME_MAX_LENGTH),
 ]
 
 
 class ProjectBase(BaseModel):
     name: ProjectName
-    description: str | None = Field(
-        default=None,
-        max_length=PROJECT_DESCRIPTION_MAX_LENGTH,
-    )
+    description: str | None = Field(default=None, max_length=PROJECT_DESCRIPTION_MAX_LENGTH)
 
 
 class ProjectCreate(ProjectBase):
@@ -38,16 +27,12 @@ class ProjectReplace(ProjectBase):
 
 class ProjectUpdate(BaseModel):
     name: ProjectName | None = None
-    description: str | None = Field(
-        default=None,
-        max_length=PROJECT_DESCRIPTION_MAX_LENGTH,
-    )
+    description: str | None = Field(default=None, max_length=PROJECT_DESCRIPTION_MAX_LENGTH)
 
 
 class ProjectRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-
-    id: UUID
+    id: int
     name: ProjectName
     description: str | None = None
     created_at: datetime

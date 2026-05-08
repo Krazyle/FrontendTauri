@@ -25,6 +25,20 @@ class Settings(BaseSettings):
     postgres_port: int = 5432
     postgres_db: str = "geon"
 
+    pg_featureserv_url: str = "http://localhost:9000"
+    app_external_url: str = "http://localhost:8000"
+
+    default_schema_name: str = "user_data"
+    default_geometry_column: str = "geom"
+    default_id_column: str = "fid"
+    default_srid: int = 4326
+    default_crs: str = "http://www.opengis.net/def/crs/OGC/1.3/CRS84"
+
+    proxy_timeout_seconds: float = 10.0
+
+    collections_default_import_status: str = "importing"
+    cors_allowed_origins: list[str] = ["*"]
+
     @property
     def sqlalchemy_database_url(self) -> str:
         if self.database_url:

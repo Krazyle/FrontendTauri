@@ -1,0 +1,22 @@
+from enum import Enum
+
+COLLECTION_ID_MAX_LENGTH = 255
+COLLECTION_TITLE_MAX_LENGTH = 255
+COLLECTION_DESCRIPTION_MAX_LENGTH = 500
+COLLECTION_CRS_MAX_LENGTH = 255
+COLLECTION_SCHEMA_NAME_MAX_LENGTH = 64
+COLLECTION_TABLE_NAME_MAX_LENGTH = 255
+COLLECTION_GEOMETRY_COLUMN_MAX_LENGTH = 64
+COLLECTION_ID_COLUMN_MAX_LENGTH = 64
+COLLECTION_GEOMETRY_TYPE_MAX_LENGTH = 64
+COLLECTION_ERROR_MESSAGE_MAX_LENGTH = 500
+
+
+class GeometryType(str, Enum):
+    Point = "Point"
+    LineString = "LineString"
+    Polygon = "Polygon"
+    MultiPoint = "MultiPoint"
+    MultiLineString = "MultiLineString"
+    MultiPolygon = "MultiPolygon"
+    GeometryCollection = "GeometryCollection"

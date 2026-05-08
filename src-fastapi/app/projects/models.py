@@ -1,14 +1,12 @@
-from datetime import UTC, datetime
-from uuid import UUID, uuid7
+from datetime import datetime
 
-from sqlalchemy import CheckConstraint, Column, DateTime, String, event, func
+from sqlalchemy import CheckConstraint, Column, DateTime, String, func
 from sqlmodel import Field, SQLModel
-
-from projects.constants import PROJECT_DESCRIPTION_MAX_LENGTH, PROJECT_NAME_MAX_LENGTH
-
-
-def utc_now() -> datetime:
-    return datetime.now(UTC)
+from app.projects.constants import (
+    PROJECT_DESCRIPTION_MAX_LENGTH,
+    PROJECT_NAME_MAX_LENGTH,
+)
+from app.utils import utc_now
 
 
 class Project(SQLModel, table=True):
@@ -16,15 +14,8 @@ class Project(SQLModel, table=True):
     __table_args__ = (
         CheckConstraint("length(trim(name)) >= 1", name="ck_projects_name_not_blank"),
     )
-
-    id: UUID = Field(default_factory=uuid7, primary_key=True)
-    name: str = Field(
-        sa_column=Column(
-            String(PROJECT_NAME_MAX_LENGTH),
-            index=True,
-            nullable=False,
-        ),
-    )
+    id: int | None = Field(default=None, primary_key=True)
+    name: str = Field(sa_column=Column(String(PROJECT_NAME_MAX_LENGTH), index=True, nullable=False))
     description: str | None = Field(
         default=None,
         sa_column=Column(String(PROJECT_DESCRIPTION_MAX_LENGTH), nullable=True),
@@ -48,14 +39,3 @@ class Project(SQLModel, table=True):
             nullable=False,
         ),
     )
-
-
-# Keeps ORM mutations consistent across drivers; Column.onupdate covers
-# SQLAlchemy-generated UPDATEs, but the mapper hook updates the entity too.
-@event.listens_for(Project, "before_update")
-def update_project_timestamp(
-    _mapper: object,
-    _connection: object,
-    project: Project,
-) -> None:
-    project.updated_at = utc_now()

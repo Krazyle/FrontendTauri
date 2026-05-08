@@ -1,0 +1,1 @@
+ID_CONVERSATION_PREFIX = "conv_"

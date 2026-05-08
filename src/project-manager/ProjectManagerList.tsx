@@ -66,5 +66,6 @@ export function ProjectManagerList({
           </div>
         ))}
       </div>
+    </div>
   );
 }
